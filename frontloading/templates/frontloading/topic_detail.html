@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Add/Edit Subject Topic tags</h1>
+<p>
+    <a href="{% url 'topics' %}">< Back</a>
+</p>
+<form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ topic.id }}" />
+    <input type="text" name="name" value="{{ topic.name }}" />
+    <button type="submit">Save</button>
+</form>
+
+{% endblock %}

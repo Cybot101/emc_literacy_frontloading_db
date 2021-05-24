@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3>Subject Domains</h3>
+<div class="row">
+    <div class="col-5">
+        {% if domains %}
+        <ul class="list-group">
+        {% for dom in domains %}
+        <li class="list-group-item list-group-item-action">
+                <form method="POST" action="{% url 'domain-detail' dom.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ dom.id }}" />
+                    <div class="row g-3">
+                        <div class="col-8">
+                            <input type="text" class="form-control" name="name" aria-label="Domain name" value="{{ dom.name }}" />
+                        </div>
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-secondary">Save</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- <a href="{% url 'domain-detail' dom.id %}">{{ dom.name }}</a> -->
+            </li>
+        {% endfor %}
+        </ul>
+        {% else %}
+        <p>No domain tags are available (yet!)</p>
+        {% endif %}
+        <p> </p>
+        <h3>Add new subject domain:</h3>
+        <form method="POST" action="{% url 'domain-new' %}">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ dom.id }}" />
+        <div class="row g-3">
+            <div class="col-8">
+                <div class="input-group">
+                    <div class="input-group-text">Domain name:</div>
+                    <!-- <label for="name" class="form-label">Title</label> -->
+                    <input class="form-control"  type="text" name="name" value="{{ dom.name }}" />  
+                </div>
+            </div>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

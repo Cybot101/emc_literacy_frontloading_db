@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Add/Edit domain tag</h1>
+<p>
+    <a href="{% url 'domain' %}">< Back</a>
+</p>
+<form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ domain.id }}" />
+    <input type="text" name="name" value="{{ domain.name }}" />
+    <button type="submit">Save</button>
+</form>
+
+{% endblock %}

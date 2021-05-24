@@ -1,0 +1,14 @@
+{% block content %}
+
+<h2>{{ filter }}</h2>
+{% if filter_list %}
+<ul>
+{% for filt in filter_list %}
+    <li><a href="{% url 'documents-list' filter filt.id %}">{{ filt.name }}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No {{ filter }}s are available (yet!)</p>
+{% endif %}
+
+{% endblock %}

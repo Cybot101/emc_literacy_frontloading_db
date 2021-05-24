@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-3">
+        <h3>Filter by:</h3>
+        <p> </p>
+        <div class="d-flex justify-content-between align-items-center">
+            <h4>Subject domain</h4>
+            <a href="{% url 'domains' %}" class="badge bg-primary rounded-pill text-decoration-none"><i class="bi bi-pencil"></i> Edit domains</a>
+        </div>
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action" href="{% url 'words' %}">All domains</a>
+            {% for d in domains %}
+            <a class="list-group-item list-group-item-action" href="{% url 'words' %}?domain={{ d.name }}">{{ d.name }}</a>
+            {% endfor %}
+        </div>
+        <p> </p>
+        <div class="d-flex justify-content-between align-items-center">
+            <h4>Topic</h4>
+            <a href="{% url 'topics' %}" class="badge bg-primary rounded-pill text-decoration-none"><i class="bi bi-pencil"></i> Edit topics</a>
+        </div>
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action" href="{% url 'words' %}">All topics</a>
+            {% for t in topics %}
+            <a class="list-group-item list-group-item-action" href="{% url 'words' %}?topic={{ t.name }}">{{ t.name }}</a>
+            {% endfor %}
+        </div>
+        
+    </div>
+    <div class="col-sm-9">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="">Vocabulary Words</h2>
+            <a href="{% url 'word-new' %}" class="badge bg-primary rounded-pill text-decoration-none"><i class="bi bi-plus"></i><span>Add Word</span></a>
+        </div>
+        <!-- <li class="list-group-item"></li> -->
+        {% if words %}
+        <div class="list-group">
+        {% for w in words %}
+            <!-- <li class="list-group-item"><a >)</a></li> -->
+            <a class="list-group-item list-group-item-action flex-column align-items-start" href="{% url 'word-detail' w.id %}">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ w.name }} ( {{ w.type }} )</h5>
+                    <small><i class="bi bi-pencil"></i> </small>
+                </div>
+                <p class="mb-1">
+                    {{ w.definition }}
+                </p>
+                <!-- <small> Used <i>0</i> times</small> -->
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="list-group">
+            <span class="list-group-item list-group-item-action flex-column align-items-start">
+                No words are available (yet!)
+            </span>
+        </div>
+        {% endif %}
+        
+    </div>
+</div>
+
+{% endblock %}

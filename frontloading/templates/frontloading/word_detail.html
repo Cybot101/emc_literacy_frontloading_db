@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% block head %}
+<style>
+textarea { 
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    outline: 0; box-shadow: none;
+    border: none;
+    border-bottom: 1px solid #ced4da;
+    border-radius: 0;
+    /* box-sizing: content-box; */
+    background-color: transparent;
+    /* overflow-y: hidden; */
+    padding: 1.5rem 0;
+    resize: none;
+} 
+</style>
+{% endblock %}
+{% block content %}
+<h1>Add/Edit vocabulary word</h1>
+<p>
+    <a href="{% url 'words' %}">< Back</a>
+</p>
+{% if word.id %}
+<form method="POST" enctype="multipart/form-data" class="">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ word.id }}" />
+    <div class="row g-4">
+        <div class="col-sm-5">
+            <label for="nameInput" class="form-label">Vocab word</label>
+            <input type="text" class="form-control" id="name" name="name" aria-describedby="nameInput" value="{{ word.name }}">
+            <!-- <div id="emailHelp" class="form-text">...</div> -->
+        </div>
+        <div class="col-sm-3">
+            <label for="type" class="form-label">Type</label>
+            <select class="form-select" id="type" name="type" aria-describedby="type" >
+                {% for t in types %}
+                <option {% if word.type == t %} selected {% endif %} value="{{ t }}" >{{ t }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="pronunciation" class="form-label">Pronunciation</label>
+        <div class="col-sm-9">
+            <textarea class="form-control" id="pronunciation" name="pronunciation" aria-describedby="pronunciation" rows="5" maxlength="200" >{{ word.pronunciation }}</textarea>
+            <div id="pronunciationHelp" class="form-text">Enter each part on a <b>new line</b></div>
+        </div>
+        <div class="col-sm-3">
+            <div id="pronunciationHelp" class="form-text">pro - pruh</br>nun - nuhn</br>ci - see</br>a - ey</br>tion - shuhn</div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="definition" class="form-label">Definition</label>
+        <input type="text" class="form-control" id="definition" name="definition" aria-describedby="definition" value="{{ word.definition }}" >
+    </div>
+    <div class="mb-3">
+        <label for="family" class="form-label">Word family</label>
+        <textarea type="" class="form-control" id="family" name="family" aria-describedby="family">{{ word.word_family }}</textarea>
+        <div id="familyHelp" class="form-text">Word family, separated by <b>comma</b></div>
+    </div>
+    <div class="mb-3 row">
+        <div class="col-sm-6">
+            <label for="image" class="form-label">Picture</label>
+            <input type="file" class="form-control" id="image" name="image" aria-describedby="image">
+            <div id="image" class="form-text">Select a picture to upload.</div>
+        </div>
+        <div class="col-sm-6">
+            {% if word.image %}
+            <img src="/frontloading{{ MEDIA_URL }}{{ word.image.url }}" width="200px" />
+            {% else %}
+            <img src="none" width="200px" />
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label for="synonyms" class="form-label">Synonyms</label>
+        <input type="text" class="form-control" id="synonyms" name="synonyms" aria-describedby="synonyms" value="{{ word.synonyms }}">
+        <div id="synonymsHelp" class="form-text">...</div>
+    </div>
+    <div class="mb-3">
+        <label for="example" class="form-label">Example use</label>
+        <input type="text" class="form-control" id="example" name="example" aria-describedby="example" value="{{ word.example }}">
+        <!-- <div id="exampleHelp" class="form-text">...</div> -->
+    </div>
+    <div class="mb-3">
+        <label for="sentence" class="form-label">Sentence form the text</label>
+        <input type="text" class="form-control" id="sentence" name="sentence" aria-describedby="sentence" value="{{ word.sentence }}">
+        <!-- <div id="sentenceHelp" class="form-text">...</div> -->
+    </div>
+    <div class="mb-3">
+        <label for="domains" class="form-label">Domain tags</label>
+        <input type="text" class="form-control" id="domains" name="domains" aria-describedby="domains" value="{% for d in word.domains.all %}{{ d.name }}, {% endfor %}">
+        <div id="domainsHelp" class="form-text">List of teaching domains this word may be used in (science, maths, etc..)</div>
+    </div>
+    <div class="mb-3">
+        <label for="topics" class="form-label">Topic tags</label>
+        <input type="text" class="form-control" id="topics" name="topics" aria-describedby="topics" value="{% for d in word.topics.all %} {{ d.name }} {% endfor %}">
+        <div id="topicsHelp" class="form-text">List of topics this word may be used in (Algebra, genetics, etc..)</div>
+    </div>
+    <div class="mb-3">
+        <label for="tags" class="form-label">Misc. tags</label>
+        <input type="text" class="form-control" id="tags" name="tags" aria-describedby="tags">
+        <div id="tagsHelp" class="form-text">List of generic tags this word can be found with</div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary" >Save</button>
+</form>
+{% else %}
+<form method="POST" enctype="multipart/form-data" class="">
+    {% csrf_token %}
+    <input type="hidden" name="id"  />
+    <div class="row g-4">
+        <div class="col-sm-5">
+            <label for="nameInput" class="form-label">Vocab word</label>
+            <input type="text" class="form-control" id="name" name="name" aria-describedby="nameInput" value="{{ word.name }}">
+            <!-- <div id="emailHelp" class="form-text">...</div> -->
+        </div>
+        <div class="col-sm-3">
+            <label for="type" class="form-label">Type</label>
+            <select class="form-select" id="type" name="type" aria-describedby="type" >
+                {% for t in types %}
+                <option {% if word.type == t %} selected {% endif %} value="{{ t }}" >{{ t }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="pronunciation" class="form-label">Pronunciation</label>
+        <div class="col-sm-9">
+            <textarea class="form-control" id="pronunciation" name="pronunciation" aria-describedby="pronunciation" rows="5" maxlength="200" >{{ word.pronunciation }}</textarea>
+            <div id="pronunciationHelp" class="form-text">Enter each part on a <b>new line</b></div>
+        </div>
+        <div class="col-sm-3">
+            <div id="pronunciationHelp" class="form-text">pro - pruh</br>nun - nuhn</br>ci - see</br>a - ey</br>tion - shuhn</div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="definition" class="form-label">Definition</label>
+        <input type="text" class="form-control" id="definition" name="definition" aria-describedby="definition" >
+        <!-- <div id="definitionHelp" class="form-text">...</div> -->
+    </div>
+    <div class="mb-3">
+        <label for="family" class="form-label">Word family</label>
+        <textarea type="" class="form-control" id="family" name="family" aria-describedby="family"></textarea>
+        <div id="familyHelp" class="form-text">Word family, separated by <b>comma</b></div>
+    </div>
+    <div class="mb-3">
+        <label for="image" class="form-label">Picture</label>
+        <input type="file" class="form-control" id="image" name="image" aria-describedby="image">
+        <div id="image" class="form-text">Select a picture to upload.</div>
+    </div>
+    
+    <div class="mb-3">
+        <label for="synonyms" class="form-label">Synonyms</label>
+        <input type="text" class="form-control" id="synonyms" name="synonyms" aria-describedby="synonyms">
+        <div id="synonymsHelp" class="form-text">...</div>
+    </div>
+    <div class="mb-3">
+        <label for="example" class="form-label">Example use</label>
+        <input type="text" class="form-control" id="example" name="example" aria-describedby="example">
+        <!-- <div id="exampleHelp" class="form-text">...</div> -->
+    </div>
+    <div class="mb-3">
+        <label for="sentence" class="form-label">Sentence form the text</label>
+        <input type="text" class="form-control" id="sentence" name="sentence" aria-describedby="sentence">
+        <!-- <div id="sentenceHelp" class="form-text">...</div> -->
+    </div>
+    <div class="mb-3">
+        <label for="domains" class="form-label">Domain tags</label>
+        <input type="text" class="form-control" id="domains" name="domains" aria-describedby="domains">
+        <div id="domainsHelp" class="form-text">List of teaching domains this word may be used in (science, maths, etc..)</div>
+    </div>
+    <div class="mb-3">
+        <label for="topics" class="form-label">Topic tags</label>
+        <input type="text" class="form-control" id="topics" name="topics" aria-describedby="topics">
+        <div id="topicsHelp" class="form-text">List of topics this word may be used in (Algebra, genetics, etc..)</div>
+    </div>
+    <div class="mb-3">
+        <label for="tags" class="form-label">Misc. tags</label>
+        <input type="text" class="form-control" id="tags" name="tags" aria-describedby="tags">
+        <div id="tagsHelp" class="form-text">List of generic tags this word can be found with</div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary" >Save</button>
+</form>
+{% endif %}
+{% endblock %}

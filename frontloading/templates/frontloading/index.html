@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="row justify-content-sm-center">
+    <div class="col-sm-4">
+        <div class="card" >
+            <img class="card-img-top" src="{% static 'img/document_icon.gif' %}" alt="Card image cap">
+            <div class="card-body">
+                <a href="{% url 'documents' %}" class="btn stretched-link">
+                    <h5 class="card-title">Create frontloading document</h5>
+                    <p class="card-text">Create a new frontloading document, or select an awesome document that already exists.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <img class="card-img-top" src="{% static 'img/vocab_icon.gif' %}" alt="Card image cap">
+            <div class="card-body">
+                <a href="words" class="btn stretched-link">
+                    <h5 class="card-title">Edit vocabulary words</h5>
+                    <p class="card-text">Add or edit vocabulary words and content.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <h2>Popular frontloading documents</h2>
+    <div>
+
+    </div>
+</div>
+
+{% endblock %}

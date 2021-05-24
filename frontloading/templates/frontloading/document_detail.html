@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Add/Edit document</h1>
+<p>
+    <a href="{% url 'documents' %}">< Back</a>
+</p>
+
+<div class="row">
+    <div class="col-sm-4">
+        <label class="form-label">Select words to add</label>
+        <div class="list-group" style="overflow: hidden; overflow-y: scroll; height: 40em;">
+            {% for w in words %}
+            <button type="button" class="list-group-item list-group-item-action" onclick="javascript:add_word('{{w.id}}','{{w.name}}')" >{{ w.name}}</button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" id="document_id" name="document_id" value="{{ document.id }}">
+            <input type="hidden" id="form-words" name="words" value="">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" value="{{ document.title }}">
+                <div id="titleHelp" class="form-text">Title for the frontloading document</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Vocabulary words selected</label> <label id="word_count">0</label>/5
+                <div id="word_list_display" class="list-group">
+                </div>
+            </div>
+
+            <button type="submit" id="form_submit" class="btn btn-secondary disabled">Save</button>
+        </form>
+    </div>
+</div>
+<h3 style="margin-top: 30px;">Preview</h3>
+<a href="{% url 'document-preview' document.id %}" class="btn btn-secondary" target="_blank" >Print Document</a>
+<a href="{% url 'document-pdf' document.id %}" class="btn btn-secondary" target="_blank" >Save PDF Document</a>
+<p></p>
+<div id="preview-div" >
+    <iframe src="{% url 'document-preview' document.id %}" width="100%" height="500px" frameborder="0" ></iframe>
+</div>
+
+<script type="text/javascript">
+    word_count = 0;
+    function check_button() {
+        if (word_count == 5) {
+            $('#form_submit').removeClass('disabled btn-secondary').addClass('btn-success');
+        }
+        else {
+            $('#form_submit').addClass('disabled btn-secondary').removeClass('btn-success');
+        }
+    }
+    function add_word(id, name) {
+        
+        if (word_count >= 5) {
+            alert("Can only add 5 words");
+            return false;
+        }
+
+        frm = $("#form-words").val();
+        rex = new RegExp('(?<=(^|,))' + id + '(,|$)', 'g');
+        if (frm.match(rex)) {
+            alert("Can't add twice");
+            return;
+        }
+
+        template = '<div class="list-group-item" data-id="' + id + '"><div class="row g-3"><div class="col-sm-8">' + name + '</div><div class="col-sm-4"><button type="button" class="btn btn-secondary" onclick="javascript:remove_word(\'' + id + '\');"><i class="bi bi-x-circle"></i> Remove</button></div></div></div>';
+        $("#word_list_display").append(template);
+
+        frm +=  id + ',';
+        $("#form-words").val(frm);
+        word_count++;
+        $("#word_count").html(word_count);
+        check_button();
+    };
+    function remove_word(id) {
+        itm = $("div[data-id='" + id + "']");
+        itm.remove();
+        frm = $("#form-words").val();
+        rex = new RegExp('(?<=(^|,))' + id + '(,|$)', 'g');
+        frm = frm.replace(rex, "");
+        $("#form-words").val(frm);
+        word_count--;
+        $("#word_count").html(word_count);
+        check_button();
+    };
+    $(function(){
+        {% if document.id %}
+            {% if document.word1 %}
+            add_word({{ document.word1.id }}, "{{ document.word1.name }}");
+            {% endif %}
+            {% if document.word2 %}
+            add_word({{ document.word2.id }}, "{{ document.word2.name }}");
+            {% endif %}
+            {% if document.word3 %}
+            add_word({{ document.word3.id }}, "{{ document.word3.name }}");
+            {% endif %}
+            {% if document.word4 %}
+            add_word({{ document.word4.id }}, "{{ document.word4.name }}");
+            {% endif %}
+            {% if document.word5 %}
+            add_word({{ document.word5.id }}, "{{ document.word5.name }}");
+            {% endif %}
+        {% endif %}
+        
+        // setTimeout( function() {
+        //     $('<iframe width="100%" />').attr('src', '{% url 'document-preview' document.id %}').appendTo('#preview-div'); 
+        // }, 1000);
+    })
+</script>
+
+{% endblock %}

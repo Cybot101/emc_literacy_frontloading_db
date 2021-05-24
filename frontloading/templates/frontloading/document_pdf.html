@@ -1,0 +1,272 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>EMC Literacy - Frontloading Document</title>
+    <link rel="stylesheet" href="{% static 'css/paper.css' %}">
+
+    <style type="text/css">
+        @page {
+            size: A4 landscape;
+            @frame content_frame {
+                left: 25pt;
+                right: 25pt;
+                top: 25pt;
+                bottom: 25pt;
+            }
+        }
+        .table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 5px;
+            background-color: #fff;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 5px;
+            padding-bottom: 6px;
+            padding-top: 6px;
+            vertical-align: top;
+            border-left: 2px solid #000;
+            text-align: center;
+        }
+        .table td + td { 
+            /* border-left:2px solid black;;  */
+        }
+
+        .table .heading {
+            vertical-align: middle;
+            background-color: rgb(126, 126, 126);
+            color: #fff
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            /* border-bottom: 2px solid #000; */
+        }
+
+        .table tbody + tbody {
+            /* border-top: 2px solid #000; */
+        }
+
+        .table {
+            background-color: #fff;
+        }
+
+        .content-title {
+            text-align: center;
+            background-color: darkgray;
+        }
+
+        .stripe {
+            background-color: lightgrey;
+        }
+
+        ul {
+            margin: 0px;
+        }
+
+        h3 {
+            margin-top: 0px;
+        }
+
+        img{
+            max-height:100px;
+            max-width:200px;
+            height:auto;
+            width:auto;
+        }
+
+        .list-group {
+            display: block;
+            width: 100%;
+            list-style: none;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .list-group p {
+            width: 100%;
+            height: 20px;
+            line-height: 20px;
+            list-style: none;
+            font-size: 1.1em;
+        }
+
+    </style>
+</head>
+<body class="A4 landscape">
+
+<div class="sheet padding-10mm container">
+    <div class="card">
+        <h3>Frontloading Vocabulary</h3>
+        <table class="table">
+            <colgroup>
+                <col style="width: 15%">
+                <col style="width: 17%">
+                <col style="width: 17%">
+                <col style="width: 17%">
+                <col style="width: 17%">
+                <col style="width: 17%">
+             </colgroup>
+            <thead>
+            <tr>
+                <th class="heading">Content / Text</th>
+                <th colspan="5" class="content-title">{{ document.title }}</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="heading">Vocabulary</th>
+                    <th>{{ document.word1.name }}</th>
+                    <th>{{ document.word2.name }}</th>
+                    <th>{{ document.word3.name }}</th>
+                    <th>{{ document.word4.name }}</th>
+                    <th>{{ document.word5.name }}</th>
+                </tr>
+                <tr class="stripe">
+                    <td class="heading">Word parts, pronunciation, origin</td>
+                    <td>{{ document.word1.pronunciation|linebreaksbr }}</td>
+                    <td>{{ document.word2.pronunciation|linebreaksbr }}</td>
+                    <td>{{ document.word3.pronunciation|linebreaksbr }}</td>
+                    <td>{{ document.word4.pronunciation|linebreaksbr }}</td>
+                    <td>{{ document.word5.pronunciation|linebreaksbr }}</td>
+                </tr>
+                <tr>
+                    <td class="heading">Definition</td>
+                    <td>{{ document.word1.definition }}</td>
+                    <td>{{ document.word2.definition }}</td>
+                    <td>{{ document.word3.definition }}</td>
+                    <td>{{ document.word4.definition }}</td>
+                    <td>{{ document.word5.definition }}</td>
+                </tr>
+                <tr class="stripe">
+                    <td class="heading">Word family</td>
+                    <td style="text-align:left">
+                        <ul>
+                        {% for w in document.word1.word_family_as_list %}
+                        <li>{{ w }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td style="text-align:left">
+                        <ul>
+                        {% for w in document.word2.word_family_as_list %}
+                        <li>{{ w }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td style="text-align:left">
+                        <ul>
+                        {% for w in document.word3.word_family_as_list %}
+                        <li>{{ w }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td style="text-align:left">
+                        <ul>
+                        {% for w in document.word4.word_family_as_list %}
+                        <li>{{ w }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td style="text-align:left">
+                        <ul>
+                        {% for w in document.word5.word_family_as_list %}
+                        <li>{{ w }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="heading">Image {{ BASE_URL|safe }}</td>
+                    <td> 
+                        {% if document.word1.image %}
+                        <img src="{{ BASE_URL }}/frontloading{{ MEDIA_URL }}{{ document.word1.image.url }}" />
+                        {% endif %}
+                    </td>
+                    <td> 
+                        {% if document.word2.image %}
+                        <img src="{{ BASE_URL }}/frontloading{{ MEDIA_URL }}{{ document.word2.image.url }}" />
+                        {% endif %}
+                    </td>
+                    <td> 
+                        {% if document.word3.image %}
+                        <img src="{{ BASE_URL }}/frontloading{{ MEDIA_URL }}{{ document.word3.image.url }}" />
+                        {% endif %}
+                    </td>
+                    <td> 
+                        {% if document.word4.image %}
+                        <img src="{{ BASE_URL }}/frontloading{{ MEDIA_URL }}{{ document.word4.image.url }}" />
+                        {% endif %}
+                    </td>
+                    <td> 
+                        {% if document.word5.image %}
+                        <img src="{{ BASE_URL }}/frontloading{{ MEDIA_URL }}{{ document.word5.image.url }}" />
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="stripe">
+                    <td class="heading">Synonyms</td>
+                    <td style="text-align:left">
+                        <ul>
+                        {% for w in document.word1.synonyms_as_list %}
+                        <li>{{ w }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td style="text-align:left">
+                        <ul>
+                        {% for w in document.word2.synonyms_as_list %}
+                        <li>{{ w }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td style="text-align:left">
+                        <ul>
+                        {% for w in document.word3.synonyms_as_list %}
+                        <li>{{ w }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td style="text-align:left">
+                        <ul>
+                        {% for w in document.word4.synonyms_as_list %}
+                        <li>{{ w }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td style="text-align:left">
+                        <ul>
+                        {% for w in document.word5.synonyms_as_list %}
+                        <li>{{ w }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="heading">General example sentence</td>
+                    <td>{{ document.word1.example }}</td>
+                    <td>{{ document.word2.example }}</td>
+                    <td>{{ document.word3.example }}</td>
+                    <td>{{ document.word4.example }}</td>
+                    <td>{{ document.word5.example }}</td>
+                </tr>
+                <tr class="stripe">
+                    <td class="heading">Sentence from the text</td>
+                    <td>{{ document.word1.sentence }}</td>
+                    <td>{{ document.word2.sentence }}</td>
+                    <td>{{ document.word3.sentence }}</td>
+                    <td>{{ document.word4.sentence }}</td>
+                    <td>{{ document.word5.sentence }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
