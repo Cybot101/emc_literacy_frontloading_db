@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-%i13wa*h)8-pda@^3v!m169^o(omdrw0_x#qnh+pfs-(%#@cs6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['emc-literacy-frontloading-demo.herokuapp.com']
 
 
 # Application definition
@@ -120,10 +120,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-MEDIA_ROOT = 'c:/django/media'
+MEDIA_ROOT = 'django/media'
 MEDIA_URL = 'media/'
 
-BASE_URL = 'http://localhost:8080/'
+BASE_URL = 'http://emc-literacy-frontloading-demo.herokuapp.com/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
