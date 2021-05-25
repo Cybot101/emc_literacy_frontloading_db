@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-sm-4">
         <label class="form-label">Select words to add</label>
-        <div class="list-group" style="overflow: hidden; overflow-y: scroll; height: 40em;">
+        <div class="list-group" style="overflow: hidden; overflow-y: scroll; height: 30em;">
             {% for w in words %}
             <button type="button" class="list-group-item list-group-item-action" onclick="javascript:add_word('{{w.id}}','{{w.name}}')" >{{ w.name}}</button>
             {% endfor %}
