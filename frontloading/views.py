@@ -232,7 +232,8 @@ def word(request, word_id = None):
             word.example = request.POST.get('example')
             word.sentence = request.POST.get('sentence')
 
-            word.image = request.FILES['image']
+            if 'image' in request.FILES:
+                word.image = request.FILES['image']
 
             domains_text = request.POST.get('domains').split(',')
             for dom in domains_text:

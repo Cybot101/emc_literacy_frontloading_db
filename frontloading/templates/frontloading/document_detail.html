@@ -37,6 +37,7 @@
         </form>
     </div>
 </div>
+{% if document.id %}
 <h3 style="margin-top: 30px;">Preview</h3>
 <a href="{% url 'document-preview' document.id %}" class="btn btn-secondary" target="_blank" >Print Document</a>
 <a href="{% url 'document-pdf' document.id %}" class="btn btn-secondary" target="_blank" >Save PDF Document</a>
@@ -44,6 +45,7 @@
 <div id="preview-div" >
     <iframe src="{% url 'document-preview' document.id %}" width="100%" height="500px" frameborder="0" ></iframe>
 </div>
+{% endif %}
 
 <script type="text/javascript">
     word_count = 0;
@@ -107,10 +109,6 @@
             add_word({{ document.word5.id }}, "{{ document.word5.name }}");
             {% endif %}
         {% endif %}
-        
-        // setTimeout( function() {
-        //     $('<iframe width="100%" />').attr('src', '{% url 'document-preview' document.id %}').appendTo('#preview-div'); 
-        // }, 1000);
     })
 </script>
 
