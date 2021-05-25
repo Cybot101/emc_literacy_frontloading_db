@@ -1,0 +1,1 @@
+web: gunicorn emc_litracy.wsgi
