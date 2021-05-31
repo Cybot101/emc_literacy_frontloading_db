@@ -264,7 +264,7 @@ def words(request):
         query_set['topics__name'] = request.GET.get('topic')
     
     return render(request, 'frontloading/word_list.html', {
-        'words': Word.objects.all().filter(**query_set),
+        'words': Word.objects.all().filter(**query_set).order_by('name'),
         'domains': Domain.objects.all(),
         'topics': Topic.objects.all()
     })

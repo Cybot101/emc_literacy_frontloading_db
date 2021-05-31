@@ -185,27 +185,27 @@
                     <td class="heading">Image {{ BASE_URL|safe }}</td>
                     <td> 
                         {% if document.word1.image %}
-                        <img src="{{ BASE_URL }}/frontloading{{ MEDIA_URL }}{{ document.word1.image.url }}" />
+                        <img src="{{ document.word1.image.url }}" />
                         {% endif %}
                     </td>
                     <td> 
                         {% if document.word2.image %}
-                        <img src="{{ BASE_URL }}/frontloading{{ MEDIA_URL }}{{ document.word2.image.url }}" />
+                        <img src="{{ document.word2.image.url }}" />
                         {% endif %}
                     </td>
                     <td> 
                         {% if document.word3.image %}
-                        <img src="{{ BASE_URL }}/frontloading{{ MEDIA_URL }}{{ document.word3.image.url }}" />
+                        <img src="{{ document.word3.image.url }}" />
                         {% endif %}
                     </td>
                     <td> 
                         {% if document.word4.image %}
-                        <img src="{{ BASE_URL }}/frontloading{{ MEDIA_URL }}{{ document.word4.image.url }}" />
+                        <img src="{{ document.word4.image.url }}" />
                         {% endif %}
                     </td>
                     <td> 
                         {% if document.word5.image %}
-                        <img src="{{ BASE_URL }}/frontloading{{ MEDIA_URL }}{{ document.word5.image.url }}" />
+                        <img src="{{ document.word5.image.url }}" />
                         {% endif %}
                     </td>
                 </tr>
