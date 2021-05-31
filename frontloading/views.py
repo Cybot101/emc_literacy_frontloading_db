@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from .render import Render
 from django.views.decorators.clickjacking import xframe_options_sameorigin
+from django.urls import reverse
 
 from .models import *
 
@@ -196,7 +197,9 @@ def word_new(request):
         word.synonyms = request.POST.get('synonyms')
         word.example = request.POST.get('example')
         word.sentence = request.POST.get('sentence')
-        word.image = request.FILES['image']
+
+        if 'image' in request.FILES:
+            word.image = request.FILES['image']
         
         word.save()
 
@@ -207,7 +210,8 @@ def word_new(request):
                 word.domains.add(dom_m[0])
 
         word.save()
-        return redirect('word-detail', word_id=word.id)
+        return HttpResponse(reverse('word-detail', args=[word.id]))
+        # return redirect('word-detail', word_id=word.id)
 
     # List
     return render(request, 'frontloading/word_detail.html', {
@@ -241,7 +245,9 @@ def word(request, word_id = None):
                 if len(dom_m) > 0:
                     word.domains.add(dom_m[0])
             word.save()
-    print(word.image)
+
+            return HttpResponse(reverse('word-detail', args=[word.id]))
+
     return render(request, 'frontloading/word_detail.html', {
         'word': word,
         'types': wordTypes
@@ -278,3 +284,16 @@ def document_prieview(request, document_id):
     return render(request, 'frontloading/document_pdf.html', {
         "document": doc
     })
+
+def picture_upload(request):
+    ''' Handle new image upload '''
+    if 'image' in request.FILES:
+        pic = Picture()
+        pic.image = request.FILES['image']
+        pic.save()
+        return HttpResponse(f'<img src="{pic.image.url}" >')
+    return HttpResponseBadRequest("no file in request")
+
+def picture_get(request, picture_id):
+    pic = get_object_or_404(Picture, id=picture_id)
+    return HttpResponse(f'<img src="{pic.image.url}" >') # ToDo

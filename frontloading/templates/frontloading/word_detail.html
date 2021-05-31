@@ -13,6 +13,16 @@ textarea {
     padding: 1.5rem 0;
     resize: none;
 } 
+
+.picture-placeholder {
+    display: inline-block;
+    width: 200px;
+    height: 200px;
+    border: blue 1px solid;
+    border-radius: 3px;
+    -moz-outline-radius: 3px;
+}
+
 </style>
 {% endblock %}
 {% block content %}
@@ -21,7 +31,7 @@ textarea {
     <a href="{% url 'words' %}">< Back</a>
 </p>
 {% if word.id %}
-<form method="POST" enctype="multipart/form-data" class="">
+<form id="word-form" method="POST" enctype="multipart/form-data" class="">
     {% csrf_token %}
     <input type="hidden" name="id" value="{{ word.id }}" />
     <div class="row g-4">
@@ -59,20 +69,15 @@ textarea {
         <div id="familyHelp" class="form-text">Word family, separated by <b>comma</b></div>
     </div>
     <div class="mb-3 row">
-        <div class="col-sm-6">
-            <label for="image" class="form-label">Picture</label>
-            <input type="file" class="form-control" id="image" name="image" aria-describedby="image">
-            <div id="image" class="form-text">Select a picture to upload.</div>
+        <div class="col-sm-4">
+            <label for="image_upload_select" class="form-label">Picture</label>
+            <input type="file" class="form-control" id="image_upload_select" name="image_upload_select" aria-describedby="image_upload_select">
+            <div id="image" class="form-text">Select a picture to upload or paste into window with <kbd>ctrl + v</kbd></div>
         </div>
         <div class="col-sm-6">
-            {% if word.image %}
-            <img src="/frontloading{{ MEDIA_URL }}{{ word.image.url }}" width="200px" />
-            {% else %}
-            <img src="none" width="200px" />
-            {% endif %}
+            <img id="picture_container" src="{{ word.image.url }}" width="200px" />
         </div>
     </div>
-    
     <div class="mb-3">
         <label for="synonyms" class="form-label">Synonyms</label>
         <input type="text" class="form-control" id="synonyms" name="synonyms" aria-describedby="synonyms" value="{{ word.synonyms }}">
@@ -107,7 +112,7 @@ textarea {
     <button type="submit" class="btn btn-primary" >Save</button>
 </form>
 {% else %}
-<form method="POST" enctype="multipart/form-data" class="">
+<form id="word-form" method="POST" enctype="multipart/form-data" class="">
     {% csrf_token %}
     <input type="hidden" name="id"  />
     <div class="row g-4">
@@ -145,12 +150,16 @@ textarea {
         <textarea type="" class="form-control" id="family" name="family" aria-describedby="family"></textarea>
         <div id="familyHelp" class="form-text">Word family, separated by <b>comma</b></div>
     </div>
-    <div class="mb-3">
-        <label for="image" class="form-label">Picture</label>
-        <input type="file" class="form-control" id="image" name="image" aria-describedby="image">
-        <div id="image" class="form-text">Select a picture to upload.</div>
+    <div class="mb-3 row">
+        <div class="col-sm-4">
+            <label for="image_upload_select" class="form-label">Picture</label>
+            <input type="file" class="form-control" id="image_upload_select" name="image_upload_select" aria-describedby="image_upload_select">
+            <div id="image" class="form-text">Select a picture to upload or paste into window with <kbd>ctrl + v</kbd></div>
+        </div>
+        <div class="col-sm-6">
+            <img id="picture_container" src="" width="200px" />
+        </div>
     </div>
-    
     <div class="mb-3">
         <label for="synonyms" class="form-label">Synonyms</label>
         <input type="text" class="form-control" id="synonyms" name="synonyms" aria-describedby="synonyms">
@@ -185,4 +194,105 @@ textarea {
     <button type="submit" class="btn btn-primary" >Save</button>
 </form>
 {% endif %}
+<!-- Modal -->
+<div class="modal fade" id="formSaveModal" tabindex="-1" aria-labelledby="formSaveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="formSaveModalLabel">Saving Vocabulary Word...</h5>
+        </div>
+        <div class="modal-body"> </div>
+      </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+document.onpaste = function(pasteEvent) {
+    // consider the first item (can be easily extended for multiple items)
+    var i;
+    for (i=0; i<pasteEvent.clipboardData.items.length; i++)
+    {
+        var item = pasteEvent.clipboardData.items[i];
+        if (item.type.indexOf("image") === 0)
+        {
+            var blob = item.getAsFile();
+    
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                // Add picture to preview
+                document.getElementById("picture_container").src = event.target.result;
+            };
+            reader.readAsDataURL(blob);
+            break;  // Only read first match?
+        }
+    }
+}
+
+
+$(function() {
+    var saveModal = new bootstrap.Modal(document.getElementById('formSaveModal'));
+
+    $("#image_upload_select").change(function() {
+        input = this;
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                document.getElementById("picture_container").src = e.target.result;
+            }
+            console.log(input.files[0]);
+            reader.readAsDataURL(input.files[0]);
+        }
+    });
+
+    $("#word-form").submit(function(ev) {
+        ev.preventDefault();
+        saveModal.show();
+        var fd = new FormData(this);
+        var dataURI = document.getElementById("picture_container").src;
+
+        // convert base64/URLEncoded data component to raw binary data held in a string
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+
+        if (byteString != "undefined") {
+            // separate out the mime component
+            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+            // write the bytes of the string to a typed array
+            var ia = new Uint8Array(byteString.length);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+
+            fd.append("image", new Blob([ia], {type:mimeString}), new Date().toISOString().replace(':','-') + "." + mimeString.split('/')[1]);
+        }
+        // Submit Form and upload file
+        $.ajax({
+            url:window.location,
+            data: fd,// the formData function is available in almost all new browsers.
+            type:"POST",
+            contentType:false,
+            processData:false,
+            cache:false,
+            dataType:"html", // Change this according to your response from the server.
+            error:function(err){
+                saveModal.hide();
+                console.error(err);
+            },
+            success:function(data){
+                console.log(data);
+                window.location = data;
+            },
+            complete:function(){
+                console.log("Request finished.");
+            }
+        });
+    });
+});
+
+</script>
 {% endblock %}

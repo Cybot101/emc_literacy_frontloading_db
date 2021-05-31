@@ -28,7 +28,7 @@ class Word(models.Model):
     pronunciation = models.CharField(max_length=200)
     definition = models.CharField(max_length=300)
     word_family = models.CharField(max_length=200)
-    image = models.ImageField()
+    image = models.ImageField(null=True, default=None)
     synonyms = models.CharField(max_length=200)
     example = models.CharField(max_length=500)
     sentence = models.CharField(max_length=500)

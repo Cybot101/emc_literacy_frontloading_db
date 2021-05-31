@@ -24,6 +24,10 @@ urlpatterns = [
     path('words', views.words, name='words'),
     path('word/<int:word_id>', views.word, name='word-detail'),
     path('word/new', views.word_new, name='word-new'),
+
+    path('picture', views.picture_upload, name='picture-upload'),
+    path('picture/<int:picture_id>', views.picture_get, name='picture-get'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
