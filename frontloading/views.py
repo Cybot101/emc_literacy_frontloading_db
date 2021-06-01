@@ -229,6 +229,8 @@ def word_new(request):
         if request.POST.get('type') in wordTypes:
             word.type = request.POST.get('type')
         word.pronunciation = request.POST.get('pronunciation')
+        word.parts = request.POST.get('parts')
+        word.etymology = request.POST.get('etymology')
         word.definition = request.POST.get('definition')
         word.word_family = request.POST.get('family')
         word.synonyms = request.POST.get('synonyms')
@@ -288,6 +290,8 @@ def word(request, word_id = None):
             if request.POST.get('type') in wordTypes:
                 word.type = request.POST.get('type')
             word.pronunciation = request.POST.get('pronunciation')
+            word.parts = request.POST.get('parts')
+            word.etymology = request.POST.get('etymology')
             word.definition = request.POST.get('definition')
             word.word_family = request.POST.get('family')
             word.synonyms = request.POST.get('synonyms')

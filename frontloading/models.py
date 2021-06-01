@@ -26,6 +26,8 @@ class Word(models.Model):
     name = models.CharField(max_length=100) # Vocab..
     type = models.CharField(max_length=100) # noun, verb, etc.
     pronunciation = models.CharField(max_length=200)
+    parts = models.CharField(max_length=200, default="")
+    etymology = models.CharField(max_length=200, default="")
     definition = models.CharField(max_length=300)
     word_family = models.CharField(max_length=200)
     image = models.ImageField(null=True, default=None)

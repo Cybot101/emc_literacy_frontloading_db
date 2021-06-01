@@ -96,6 +96,10 @@
             font-size: 1.1em;
         }
 
+        body {
+            font-size: 14px;
+        }
+
     </style>
 </head>
 <body class="A4 landscape">
@@ -128,12 +132,28 @@
                     <th>{{ document.word5.name }}</th>
                 </tr>
                 <tr class="stripe">
-                    <td class="heading">Word parts, pronunciation, origin</td>
-                    <td>{{ document.word1.pronunciation|linebreaksbr }}</td>
-                    <td>{{ document.word2.pronunciation|linebreaksbr }}</td>
-                    <td>{{ document.word3.pronunciation|linebreaksbr }}</td>
-                    <td>{{ document.word4.pronunciation|linebreaksbr }}</td>
-                    <td>{{ document.word5.pronunciation|linebreaksbr }}</td>
+                    <td class="heading">Pronunciation</td>
+                    <td>{{ document.word1.pronunciation }}</td>
+                    <td>{{ document.word2.pronunciation }}</td>
+                    <td>{{ document.word3.pronunciation }}</td>
+                    <td>{{ document.word4.pronunciation }}</td>
+                    <td>{{ document.word5.pronunciation }}</td>
+                </tr>
+                <tr class="">
+                    <td class="heading">Word parts</td>
+                    <td>{{ document.word1.parts|linebreaksbr }}</td>
+                    <td>{{ document.word2.parts|linebreaksbr }}</td>
+                    <td>{{ document.word3.parts|linebreaksbr }}</td>
+                    <td>{{ document.word4.parts|linebreaksbr }}</td>
+                    <td>{{ document.word5.parts|linebreaksbr }}</td>
+                </tr>
+                <tr class="stripe">
+                    <td class="heading">Etymology</td>
+                    <td>{{ document.word1.etymology }}</td>
+                    <td>{{ document.word2.etymology }}</td>
+                    <td>{{ document.word3.etymology }}</td>
+                    <td>{{ document.word4.etymology }}</td>
+                    <td>{{ document.word5.etymology }}</td>
                 </tr>
                 <tr>
                     <td class="heading">Definition</td>

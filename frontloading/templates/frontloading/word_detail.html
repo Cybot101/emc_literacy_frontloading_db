@@ -46,7 +46,7 @@ textarea {
 <form id="word-form" method="POST" enctype="multipart/form-data" class="">
     {% csrf_token %}
     <input type="hidden" name="id" value="{{ word.id }}" />
-    <div class="row g-4">
+    <div class="row mb-3 g-4">
         <div class="col-sm-5">
             <label for="nameInput" class="form-label">Vocab word</label>
             <input type="text" class="form-control" id="name" name="name" aria-describedby="nameInput" value="{{ word.name|capfirst }}">
@@ -61,15 +61,24 @@ textarea {
             </select>
         </div>
     </div>
-    <div class="mb-3 row">
+    <div class="mb-3">
         <label for="pronunciation" class="form-label">Pronunciation</label>
+        <input type="text" class="form-control" id="pronunciation" name="pronunciation" aria-describedby="pronunciation" value="{{ word.pronunciation }}" placeholder="pruh-nuhn-see-ey-shun">
+    </div>
+    <div class="mb-3 row">
+        <label for="parts" class="form-label">Word parts</label>
         <div class="col-sm-9">
-            <textarea class="form-control" id="pronunciation" name="pronunciation" aria-describedby="pronunciation" rows="5" maxlength="200" >{{ word.pronunciation }}</textarea>
-            <div id="pronunciationHelp" class="form-text">Enter each part on a <b>new line</b></div>
+            <textarea class="form-control" id="parts" name="parts" aria-describedby="parts" rows="5" maxlength="200" >{{ word.parts }}</textarea>
+            <div id="partsHelp" class="form-text">Enter each part on a <b>new line</b></div>
         </div>
-        <div class="col-sm-3">
-            <div id="pronunciationHelp" class="form-text">pro - pruh</br>nun - nuhn</br>ci - see</br>a - ey</br>tion - shuhn</div>
-        </div>
+        <!-- <div class="col-sm-3">
+            <div id="partsHelp" class="form-text">pro - pruh</br>nun - nuhn</br>ci - see</br>a - ey</br>tion - shuhn</div>
+        </div> -->
+    </div>
+    <div class="mb-3">
+        <label for="etymology" class="form-label">Etymology</label>
+        <input type="text" class="form-control" id="etymology" name="etymology" aria-describedby="etymology" value="{{ word.etymology }}">
+        <div id="partsHelp" class="form-text">Enter if applicable</div>
     </div>
     <div class="mb-3">
         <label for="definition" class="form-label">Definition</label>
@@ -134,7 +143,7 @@ textarea {
 <form id="word-form" method="POST" enctype="multipart/form-data" class="">
     {% csrf_token %}
     <input type="hidden" name="id"  />
-    <div class="row g-4">
+    <div class="row mb-3 g-4">
         <div class="col-sm-5">
             <label for="nameInput" class="form-label">Vocab word</label>
             <input type="text" class="form-control" id="name" name="name" aria-describedby="nameInput" value="{{ word.name|capfirst }}">
@@ -149,15 +158,24 @@ textarea {
             </select>
         </div>
     </div>
-    <div class="mb-3 row">
+    <div class="mb-3">
         <label for="pronunciation" class="form-label">Pronunciation</label>
+        <input type="text" class="form-control" id="pronunciation" name="pronunciation" aria-describedby="pronunciation" value=""  placeholder="pruh-nuhn-see-ey-shun">
+    </div>
+    <div class="mb-3 row">
+        <label for="parts" class="form-label">Word parts</label>
         <div class="col-sm-9">
-            <textarea class="form-control" id="pronunciation" name="pronunciation" aria-describedby="pronunciation" rows="5" maxlength="200" >{{ word.pronunciation }}</textarea>
-            <div id="pronunciationHelp" class="form-text">Enter each part on a <b>new line</b></div>
+            <textarea class="form-control" id="parts" name="parts" aria-describedby="parts" rows="5" maxlength="200" ></textarea>
+            <div id="partsHelp" class="form-text">Enter each part on a <b>new line</b></div>
         </div>
-        <div class="col-sm-3">
-            <div id="pronunciationHelp" class="form-text">pro - pruh</br>nun - nuhn</br>ci - see</br>a - ey</br>tion - shuhn</div>
-        </div>
+        <!-- <div class="col-sm-3">
+            <div id="partsHelp" class="form-text">pro - pruh</br>nun - nuhn</br>ci - see</br>a - ey</br>tion - shuhn</div>
+        </div> -->
+    </div>
+    <div class="mb-3">
+        <label for="etymology" class="form-label">Etymology</label>
+        <input type="text" class="form-control" id="etymology" name="etymology" aria-describedby="etymology" value="">
+        <div id="partsHelp" class="form-text">Enter if applicable</div>
     </div>
     <div class="mb-3">
         <label for="definition" class="form-label">Definition</label>
