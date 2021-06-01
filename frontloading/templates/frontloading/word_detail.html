@@ -23,6 +23,18 @@ textarea {
     -moz-outline-radius: 3px;
 }
 
+.autocomplete {
+	position: relative;
+	display: inline-block;
+}
+.autocomplete-items {
+	position: absolute;
+	z-index: 99;
+	top: 100%;
+	left: 0;
+	right: 0;
+}
+
 </style>
 {% endblock %}
 {% block content %}
@@ -37,7 +49,7 @@ textarea {
     <div class="row g-4">
         <div class="col-sm-5">
             <label for="nameInput" class="form-label">Vocab word</label>
-            <input type="text" class="form-control" id="name" name="name" aria-describedby="nameInput" value="{{ word.name }}">
+            <input type="text" class="form-control" id="name" name="name" aria-describedby="nameInput" value="{{ word.name|capfirst }}">
             <!-- <div id="emailHelp" class="form-text">...</div> -->
         </div>
         <div class="col-sm-3">
@@ -68,14 +80,17 @@ textarea {
         <textarea type="" class="form-control" id="family" name="family" aria-describedby="family">{{ word.word_family }}</textarea>
         <div id="familyHelp" class="form-text">Word family, separated by <b>comma</b></div>
     </div>
+    <div class="mb-3">
+        <label for="image_upload_select" class="form-label">Picture</label>
+    </div>
     <div class="mb-3 row">
         <div class="col-sm-4">
-            <label for="image_upload_select" class="form-label">Picture</label>
             <input type="file" class="form-control" id="image_upload_select" name="image_upload_select" aria-describedby="image_upload_select">
             <div id="image" class="form-text">Select a picture to upload or paste into window with <kbd>ctrl + v</kbd></div>
+            <div id="image" class="form-text">Picture will be resized and cropped to fit 200px X 200px</div>
         </div>
         <div class="col-sm-6">
-            <img id="picture_container" src="{{ word.image.url }}" width="200px" />
+            <img id="picture_container" src="{% if word.image %}{{ word.image.url }}{% endif %}" width="200px" />
         </div>
     </div>
     <div class="mb-3">
@@ -95,19 +110,23 @@ textarea {
     </div>
     <div class="mb-3">
         <label for="domains" class="form-label">Domain tags</label>
-        <input type="text" class="form-control" id="domains" name="domains" aria-describedby="domains" value="{% for d in word.domains.all %}{{ d.name }}, {% endfor %}">
+        <div class="input-group">
+            <input type="text" class="form-control autocomplete" id="domains" name="domains" aria-describedby="domains" autocomplete="new-password" value="{% for d in word.domains.all %}{{ d.name }}, {% endfor %}">
+        </div>
         <div id="domainsHelp" class="form-text">List of teaching domains this word may be used in (science, maths, etc..)</div>
     </div>
     <div class="mb-3">
         <label for="topics" class="form-label">Topic tags</label>
-        <input type="text" class="form-control" id="topics" name="topics" aria-describedby="topics" value="{% for d in word.topics.all %} {{ d.name }} {% endfor %}">
+        <div class="input-group">
+            <input type="text" class="form-control autocomplete" id="topics" name="topics" aria-describedby="topics" autocomplete="new-password" value="{% for d in word.topics.all %}{{ d.name }}, {% endfor %}">
+        </div>
         <div id="topicsHelp" class="form-text">List of topics this word may be used in (Algebra, genetics, etc..)</div>
     </div>
-    <div class="mb-3">
+    <!-- <div class="mb-3">
         <label for="tags" class="form-label">Misc. tags</label>
         <input type="text" class="form-control" id="tags" name="tags" aria-describedby="tags">
         <div id="tagsHelp" class="form-text">List of generic tags this word can be found with</div>
-    </div>
+    </div> -->
     
     <button type="submit" class="btn btn-primary" >Save</button>
 </form>
@@ -118,7 +137,7 @@ textarea {
     <div class="row g-4">
         <div class="col-sm-5">
             <label for="nameInput" class="form-label">Vocab word</label>
-            <input type="text" class="form-control" id="name" name="name" aria-describedby="nameInput" value="{{ word.name }}">
+            <input type="text" class="form-control" id="name" name="name" aria-describedby="nameInput" value="{{ word.name|capfirst }}">
             <!-- <div id="emailHelp" class="form-text">...</div> -->
         </div>
         <div class="col-sm-3">
@@ -150,11 +169,14 @@ textarea {
         <textarea type="" class="form-control" id="family" name="family" aria-describedby="family"></textarea>
         <div id="familyHelp" class="form-text">Word family, separated by <b>comma</b></div>
     </div>
+    <div class="mb-3">
+        <label for="image_upload_select" class="form-label">Picture</label>
+    </div>
     <div class="mb-3 row">
         <div class="col-sm-4">
-            <label for="image_upload_select" class="form-label">Picture</label>
             <input type="file" class="form-control" id="image_upload_select" name="image_upload_select" aria-describedby="image_upload_select">
             <div id="image" class="form-text">Select a picture to upload or paste into window with <kbd>ctrl + v</kbd></div>
+            <div id="image" class="form-text">Picture will be resized and cropped to fit 200px X 200px</div>
         </div>
         <div class="col-sm-6">
             <img id="picture_container" src="" width="200px" />
@@ -177,19 +199,23 @@ textarea {
     </div>
     <div class="mb-3">
         <label for="domains" class="form-label">Domain tags</label>
-        <input type="text" class="form-control" id="domains" name="domains" aria-describedby="domains">
+        <div class="input-group">
+            <input type="text" class="form-control autocomplete" id="domains" name="domains" aria-describedby="domains" autocomplete="new-password">
+        </div>
         <div id="domainsHelp" class="form-text">List of teaching domains this word may be used in (science, maths, etc..)</div>
     </div>
     <div class="mb-3">
         <label for="topics" class="form-label">Topic tags</label>
-        <input type="text" class="form-control" id="topics" name="topics" aria-describedby="topics">
+        <div class="input-group">
+            <input type="text" class="form-control autocomplete" id="topics" name="topics" aria-describedby="topics" autocomplete="new-password">
+        </div>
         <div id="topicsHelp" class="form-text">List of topics this word may be used in (Algebra, genetics, etc..)</div>
     </div>
-    <div class="mb-3">
+    <!-- <div class="mb-3">
         <label for="tags" class="form-label">Misc. tags</label>
         <input type="text" class="form-control" id="tags" name="tags" aria-describedby="tags">
         <div id="tagsHelp" class="form-text">List of generic tags this word can be found with</div>
-    </div>
+    </div> -->
     
     <button type="submit" class="btn btn-primary" >Save</button>
 </form>
@@ -228,6 +254,100 @@ document.onpaste = function(pasteEvent) {
     }
 }
 
+
+function autocomplete(element, arr) {
+    element.addEventListener("input", function(e) {
+        var a, //OUTER html: variable for listed content with html-content
+            b, // INNER html: filled with array-Data and html
+            i, //Counter
+            val = this.value;
+
+        /*close any already open lists of autocompleted values*/
+        closeAllLists();
+
+        if (!val) {
+            return false;
+        }
+
+        // Use only last characters in list
+        var end = val.lastIndexOf(",");
+        if (end > 0) {
+            val = val.substr(end);
+            for (i=0; i<val.length; i++) {
+                if (val[i] != "," && val[i] != " ") {
+                    val = val.substr(i);
+                    break;
+                }
+            }
+        }
+
+        /*create a DIV element that will contain the items (values):*/
+        a = document.createElement("DIV");
+        a.setAttribute("id", this.id + "autocomplete-list");
+        a.setAttribute("class", "autocomplete-items list-group text-left");
+
+        /*append the DIV element as a child of the autocomplete container:*/
+        this.parentNode.appendChild(a);
+
+        /*for each item in the array...*/
+        for (i = 0; i < arr.length; i++) {
+            /*check if the item starts with the same letters as the text field value:*/
+            if (arr[i].substr(0, val.length).toLowerCase() == val.toLowerCase()) {
+                /*create a DIV element for each matching element:*/
+                b = document.createElement("DIV");
+                b.setAttribute("class","list-group-item list-group-item-action");
+                /*make the matching letters bold:*/
+                b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                b.innerHTML += arr[i].substr(val.length);
+                
+                /*insert a input field that will hold the current array item's value:*/
+                // b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                /*execute a function when someone clicks on the item value (DIV element):*/
+                b.addEventListener("click", function(e) {
+                    if (element.value.length > 0) {
+                        var end = element.value.lastIndexOf(",");
+                        if (end > 0) {
+                            element.value = element.value.substr(0, end);
+                            element.value += ", ";
+                        }
+                        else {
+                            element.value = "";    
+                        }
+                    }
+                    element.value += this.innerText;
+                    closeAllLists();
+                });
+
+                a.appendChild(b);
+            }
+        }
+    });
+
+    function closeAllLists(elmnt) {
+        var itm = document.getElementsByClassName("autocomplete-items");
+        for (var i = 0; i < itm.length; i++) {
+            if (elmnt != itm[i] && elmnt != element) {
+                itm[i].parentNode.removeChild(itm[i]);
+            }
+        }
+    };
+
+    /*execute a function when someone clicks in the document:*/
+    document.addEventListener("click", function(e) {
+        closeAllLists(e.target);
+    });
+  
+};
+
+var domain_hints = [
+{% for d in domains %}"{{ d.name }}",{% endfor %}
+];
+var topic_hints = [
+{% for t in topics %}"{{ t.name }}",{% endfor %}
+];
+
+autocomplete(document.getElementById("domains"), domain_hints);
+autocomplete(document.getElementById("topics"), topic_hints);
 
 $(function() {
     var saveModal = new bootstrap.Modal(document.getElementById('formSaveModal'));

@@ -49,11 +49,11 @@ class Document(models.Model):
     ''' Represents an already built fronloading document '''
     title = models.CharField(max_length=200)
     # content_reference = models.CharField(max_length=100)
-    word1 = models.ForeignKey(Word, on_delete=models.RESTRICT, related_name="word1")
-    word2 = models.ForeignKey(Word, on_delete=models.RESTRICT, related_name="word2")
-    word3 = models.ForeignKey(Word, on_delete=models.RESTRICT, related_name="word3")
-    word4 = models.ForeignKey(Word, on_delete=models.RESTRICT, related_name="word4")
-    word5 = models.ForeignKey(Word, on_delete=models.RESTRICT, related_name="word5")
+    word1 = models.ForeignKey(Word, null=True, default=None, on_delete=models.RESTRICT, related_name="word1")
+    word2 = models.ForeignKey(Word, null=True, default=None, on_delete=models.RESTRICT, related_name="word2")
+    word3 = models.ForeignKey(Word, null=True, default=None, on_delete=models.RESTRICT, related_name="word3")
+    word4 = models.ForeignKey(Word, null=True, default=None, on_delete=models.RESTRICT, related_name="word4")
+    word5 = models.ForeignKey(Word, null=True, default=None, on_delete=models.RESTRICT, related_name="word5")
 
     domains = models.ManyToManyField(Domain)
     topics = models.ManyToManyField(Topic)

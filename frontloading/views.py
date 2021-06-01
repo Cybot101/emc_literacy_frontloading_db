@@ -32,9 +32,11 @@ def documents(request):
 def update_document(doc: Document, title: str, words: str):
     doc.title = title
     idx = 0
-    for w in words.split(','):
-        if len(w) > 0:
-            wd = Word.objects.get(id=int(w))
+    words = words.split(',')
+    print(words)
+    for i in range(5):
+        if i < len(words) and len(words[i]) > 0:
+            wd = Word.objects.get(id=int(words[i]))
             if wd:
                 if idx == 0:
                     doc.word1 = wd
@@ -46,7 +48,19 @@ def update_document(doc: Document, title: str, words: str):
                     doc.word4 = wd
                 elif idx == 4:
                     doc.word5 = wd
-                idx = idx + 1
+        else:
+            # Empty word
+            if idx == 0:
+                doc.word1 = None
+            elif idx == 1:
+                doc.word2 = None
+            elif idx == 2:
+                doc.word3 = None
+            elif idx == 3:
+                doc.word4 = None
+            elif idx == 4:
+                doc.word5 = None
+        idx = idx + 1
     
     doc.save()
 
@@ -114,16 +128,40 @@ def domains(request):
         'domains': Domain.objects.all()
     })
 
+def add_domain(_name):
+    _name = _name.strip()
+    dom_m = Domain.objects.filter(name__startswith=_name)
+    if len(dom_m) > 0:
+        # Exists
+        print("Exists", _name)
+        return None
+    dom = Domain(
+        name=_name,
+        create_date=timezone.now()
+    )
+    dom.save()
+    return dom
+
+def add_topic(_name):
+    _name = _name.strip()
+    top_m = Topic.objects.filter(name__startswith=_name)
+    if len(top_m) > 0:
+        # Exists
+        print("Exists", _name)
+        return None
+    top = Topic(
+        name=_name,
+        create_date=timezone.now()
+    )
+    top.save()
+    return top
+
 def domain_new(request):
     ''' Show or add/edit domain tags '''
     if request.method == 'POST':
         # Add
         print(request.POST)
-        dom = Domain(
-            name=request.POST.get('name'),
-            create_date=timezone.now()
-        )
-        dom.save()
+        dom = add_domain(request.POST.get('name'))
         return redirect('domain-detail', domain_id=dom.id)
 
     return render(request, 'frontloading/domain_detail.html', {
@@ -136,9 +174,11 @@ def domain(request, domain_id = None):
     if request.method == 'POST':
         # Edit
         if int(request.POST.get('id')) == domain_id:
-            print(request.POST)
             domain.name = request.POST.get('name')
-            domain.save()
+            if len(domain.name) == 0:
+                Domain.delete(domain)
+            else:
+                domain.save()
 
     return redirect('domains')
     # return render(request, 'frontloading/domain_detail.html', {
@@ -155,12 +195,7 @@ def topic_new(request):
     ''' Show or add/edit topics tags '''
     if request.method == 'POST':
         # Add
-        print(request.POST)
-        dom = Topic(
-            name=request.POST.get('name'),
-            create_date=timezone.now()
-        )
-        dom.save()
+        dom = add_topic(request.POST.get('name'))
         return redirect('topic-detail', topic_id=dom.id)
 
     return render(request, 'frontloading/topics_detail.html', {
@@ -173,9 +208,11 @@ def topic(request, topic_id = None):
     if request.method == 'POST':
         # Edit
         if int(request.POST.get('id')) == topic_id:
-            print(request.POST)
             topic.name = request.POST.get('name')
-            topic.save()
+            if len(topic.name) == 0:
+                Topic.delete(topic)
+            else:
+                topic.save()
 
     return redirect('topics')
 
@@ -188,7 +225,7 @@ def word_new(request):
         word = Word(
             create_date=timezone.now()
         )
-        word.name = request.POST.get('name')
+        word.name = request.POST.get('name').lower()
         if request.POST.get('type') in wordTypes:
             word.type = request.POST.get('type')
         word.pronunciation = request.POST.get('pronunciation')
@@ -205,9 +242,28 @@ def word_new(request):
 
         domains_text = request.POST.get('domains').split(',')
         for dom in domains_text:
-            dom_m = Domain.objects.filter(name__startswith=str(dom))
+            dom = dom.strip()
+            if len(dom) == 0:
+                continue
+            dom_m = Domain.objects.filter(name__startswith=dom)
             if len(dom_m) > 0:
                 word.domains.add(dom_m[0])
+            else:
+                dom_n = add_domain(dom)
+                if dom_n:
+                    word.domains.add(dom_n)
+        topic_text = request.POST.get('topics').split(',')
+        for dom in topic_text:
+            dom = dom.strip()
+            if len(dom) == 0:
+                continue
+            dom_m = Topic.objects.filter(name__startswith=dom)
+            if len(dom_m) > 0:
+                word.topics.add(dom_m[0])
+            else:
+                dom_n = add_topic(dom)
+                if dom_n:
+                    word.topics.add(dom_n)
 
         word.save()
         return HttpResponse(reverse('word-detail', args=[word.id]))
@@ -216,7 +272,9 @@ def word_new(request):
     # List
     return render(request, 'frontloading/word_detail.html', {
         'word': Word(),
-        'types': wordTypes
+        'types': wordTypes,
+        'domains': Domain.objects.all(),
+        'topics': Topic.objects.all()
     })
 
 def word(request, word_id = None):
@@ -226,7 +284,7 @@ def word(request, word_id = None):
         # Edit
         if int(request.POST.get('id')) == word_id:
             print(request.POST)
-            word.name = request.POST.get('name')
+            word.name = request.POST.get('name').lower()
             if request.POST.get('type') in wordTypes:
                 word.type = request.POST.get('type')
             word.pronunciation = request.POST.get('pronunciation')
@@ -239,18 +297,41 @@ def word(request, word_id = None):
             if 'image' in request.FILES:
                 word.image = request.FILES['image']
 
+            word.domains.clear()
+            word.topics.clear()
             domains_text = request.POST.get('domains').split(',')
             for dom in domains_text:
-                dom_m = Domain.objects.filter(name__startswith=str(dom.strip()))
+                dom = dom.strip()
+                if len(dom) == 0:
+                    continue
+                dom_m = Domain.objects.filter(name__startswith=dom)
                 if len(dom_m) > 0:
                     word.domains.add(dom_m[0])
+                else:
+                    dom_n = add_domain(dom)
+                    if dom_n:
+                        word.domains.add(dom_n)
+            topic_text = request.POST.get('topics').split(',')
+            for dom in topic_text:
+                dom = dom.strip()
+                if len(dom) == 0:
+                    continue
+                dom_m = Topic.objects.filter(name__startswith=dom)
+                if len(dom_m) > 0:
+                    word.topics.add(dom_m[0])
+                else:
+                    dom_n = add_topic(dom)
+                    if dom_n:
+                        word.topics.add(dom_n)
             word.save()
 
             return HttpResponse(reverse('word-detail', args=[word.id]))
 
     return render(request, 'frontloading/word_detail.html', {
         'word': word,
-        'types': wordTypes
+        'types': wordTypes,
+        'domains': Domain.objects.all(),
+        'topics': Topic.objects.all()
     })
 
 def words(request):
@@ -285,15 +366,23 @@ def document_prieview(request, document_id):
         "document": doc
     })
 
-def picture_upload(request):
-    ''' Handle new image upload '''
-    if 'image' in request.FILES:
-        pic = Picture()
-        pic.image = request.FILES['image']
-        pic.save()
-        return HttpResponse(f'<img src="{pic.image.url}" >')
-    return HttpResponseBadRequest("no file in request")
+# def picture_upload(request):
+#     ''' Handle new image upload '''
+#     if 'image' in request.FILES:
+#         pic = Picture()
+#         pic.image = request.FILES['image']
+#         pic.save()
+#         return HttpResponse(f'<img src="{pic.image.url}" >')
+#     return HttpResponseBadRequest("no file in request")
 
 def picture_get(request, picture_id):
     pic = get_object_or_404(Picture, id=picture_id)
     return HttpResponse(f'<img src="{pic.image.url}" >') # ToDo
+
+def words_backup(request):
+    from django.core import serializers
+    data = serializers.serialize("json", Word.objects.all())
+    data += serializers.serialize("json", Document.objects.all())
+    data += serializers.serialize("json", Domain.objects.all())
+    data += serializers.serialize("json", Topic.objects.all())
+    return HttpResponse(data, content_type="aplication/json")

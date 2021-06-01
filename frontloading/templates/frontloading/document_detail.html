@@ -9,10 +9,12 @@
 <div class="row">
     <div class="col-sm-4">
         <label class="form-label">Select words to add</label>
-        <div class="list-group" style="overflow: hidden; overflow-y: scroll; height: 30em;">
-            {% for w in words %}
-            <button type="button" class="list-group-item list-group-item-action" onclick="javascript:add_word('{{w.id}}','{{w.name}}')" >{{ w.name}}</button>
-            {% endfor %}
+        <div class="input-group mb-3">
+            <span class="input-group-text">Search words: </span>
+            <input id="words_search_input" class="form-control" type="search" placeholder="Search" aria-label="Search">
+        </div>
+        <div id="word_list_div" class="list-group" style="overflow: hidden; overflow-y: scroll; height: 30em;">
+            
         </div>
     </div>
 
@@ -40,7 +42,7 @@
 {% if document.id %}
 <h3 style="margin-top: 30px;">Preview</h3>
 <a href="{% url 'document-preview' document.id %}" class="btn btn-secondary" target="_blank" >Print Document</a>
-<a href="{% url 'document-pdf' document.id %}" class="btn btn-secondary" target="_blank" >Save PDF Document</a>
+<a href="{% url 'document-pdf' document.id %}" class="btn btn-secondary disabled" target="_blank" >Save PDF Document</a>
 <p></p>
 <div id="preview-div" >
     <iframe src="{% url 'document-preview' document.id %}" width="100%" height="500px" frameborder="0" ></iframe>
@@ -50,7 +52,7 @@
 <script type="text/javascript">
     word_count = 0;
     function check_button() {
-        if (word_count == 5) {
+        if (word_count > 0) {
             $('#form_submit').removeClass('disabled btn-secondary').addClass('btn-success');
         }
         else {
@@ -91,6 +93,47 @@
         $("#word_count").html(word_count);
         check_button();
     };
+
+    var words = [
+        {% for w in words %}{ id: {{w.id}}, name: "{{w.name}}" },{% endfor %}
+    ];
+
+    function removeAllChildNodes(parent) {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    }
+
+    function create_word(word, parent) {
+        /*create a DIV element for each matching element:*/
+        var btn = document.createElement("button");
+        btn.setAttribute("type", "button");
+        btn.setAttribute("class","list-group-item list-group-item-action");
+        btn.setAttribute("onclick","javascript:add_word('" + word.id +"','"+ word.name +"')");
+        btn.innerHTML += word.name;
+        //<button type="button" class="list-group-item list-group-item-action" onclick="javascript:add_word('{{w.id}}','{{w.name}}')" >{{ w.name}}</button>
+        parent.appendChild(btn);
+    }
+    
+    var word_list_div = document.getElementById("word_list_div");
+    var search_box = document.getElementById("words_search_input");
+    search_box.addEventListener("input", function(e) {
+        
+        removeAllChildNodes(word_list_div);
+
+        var val = this.value
+        for (i = 0; i < words.length; i++) {
+            /*check if the item starts with the same letters as the text field value:*/
+            if (words[i].name.toLowerCase().indexOf(val.toLowerCase()) > -1) {
+                create_word(words[i], word_list_div);
+            }
+        }
+    });
+
+    for (i = 0; i < words.length; i++) {
+        create_word(words[i], word_list_div);
+    }
+
     $(function(){
         {% if document.id %}
             {% if document.word1 %}
