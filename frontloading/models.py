@@ -46,6 +46,9 @@ class Word(models.Model):
     
     def synonyms_as_list(self):
         return self.synonyms.split(',')
+    
+    def parts_as_list(self):
+        return self.parts.split('\n')
 
 class Document(models.Model):
     ''' Represents an already built fronloading document '''
