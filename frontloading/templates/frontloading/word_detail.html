@@ -113,7 +113,7 @@ textarea {
         <!-- <div id="exampleHelp" class="form-text">...</div> -->
     </div>
     <div class="mb-3">
-        <label for="sentence" class="form-label">Sentence form the text</label>
+        <label for="sentence" class="form-label">Sentence from the text</label>
         <input type="text" class="form-control" id="sentence" name="sentence" aria-describedby="sentence" value="{{ word.sentence }}">
         <!-- <div id="sentenceHelp" class="form-text">...</div> -->
     </div>
@@ -129,7 +129,7 @@ textarea {
         <div class="input-group">
             <input type="text" class="form-control autocomplete" id="topics" name="topics" aria-describedby="topics" autocomplete="new-password" value="{% for d in word.topics.all %}{{ d.name }}, {% endfor %}">
         </div>
-        <div id="topicsHelp" class="form-text">List of topics this word may be used in (Algebra, genetics, etc..)</div>
+        <div id="topicsHelp" class="form-text">List of topics this word may be used in (algebra, genetics, etc..)</div>
     </div>
     <!-- <div class="mb-3">
         <label for="tags" class="form-label">Misc. tags</label>
@@ -211,7 +211,7 @@ textarea {
         <!-- <div id="exampleHelp" class="form-text">...</div> -->
     </div>
     <div class="mb-3">
-        <label for="sentence" class="form-label">Sentence form the text</label>
+        <label for="sentence" class="form-label">Sentence from the text</label>
         <input type="text" class="form-control" id="sentence" name="sentence" aria-describedby="sentence">
         <!-- <div id="sentenceHelp" class="form-text">...</div> -->
     </div>
@@ -227,7 +227,7 @@ textarea {
         <div class="input-group">
             <input type="text" class="form-control autocomplete" id="topics" name="topics" aria-describedby="topics" autocomplete="new-password">
         </div>
-        <div id="topicsHelp" class="form-text">List of topics this word may be used in (Algebra, genetics, etc..)</div>
+        <div id="topicsHelp" class="form-text">List of topics this word may be used in (algebra, genetics, etc..)</div>
     </div>
     <!-- <div class="mb-3">
         <label for="tags" class="form-label">Misc. tags</label>
@@ -235,7 +235,9 @@ textarea {
         <div id="tagsHelp" class="form-text">List of generic tags this word can be found with</div>
     </div> -->
     
-    <button type="submit" class="btn btn-primary" >Save</button>
+    <button type="submit" value="sub" class="submit_button btn btn-primary" >Save and edit</button>
+    <span style="margin-left: 20px; margin-right: 20px">or</span>
+    <button type="submit" value="sub_new" class="submit_button btn btn-primary" >Save and add another</button>
 </form>
 {% endif %}
 <!-- Modal -->
@@ -383,6 +385,11 @@ $(function() {
         }
     });
 
+    $(".submit_button").click(function() {
+        // $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");
+        $(this).attr("clicked", "true");
+    });
+
     $("#word-form").submit(function(ev) {
         ev.preventDefault();
         saveModal.show();
@@ -408,6 +415,11 @@ $(function() {
 
             fd.append("image", new Blob([ia], {type:mimeString}), new Date().toISOString().replace(':','-') + "." + mimeString.split('/')[1]);
         }
+
+        // Append the button that was used to submit form
+        var butt = $(".submit_button[clicked=true]").val();
+        fd.append("button", butt);
+
         // Submit Form and upload file
         $.ajax({
             url:window.location,

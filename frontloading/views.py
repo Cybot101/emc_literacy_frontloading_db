@@ -268,8 +268,10 @@ def word_new(request):
                     word.topics.add(dom_n)
 
         word.save()
-        return HttpResponse(reverse('word-detail', args=[word.id]))
-        # return redirect('word-detail', word_id=word.id)
+        if request.POST.get('button') == "sub_new":
+            return HttpResponse(reverse('word-new'))
+        else:
+            return HttpResponse(reverse('word-detail', args=[word.id]))
 
     # List
     return render(request, 'frontloading/word_detail.html', {
