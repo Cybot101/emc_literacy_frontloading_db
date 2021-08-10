@@ -42,13 +42,13 @@ class Word(models.Model):
     create_date = models.DateTimeField('date created')
 
     def word_family_as_list(self):
-        return self.word_family.split(',')
+        return [x for x in self.word_family.split(',') if x]
     
     def synonyms_as_list(self):
-        return self.synonyms.split(',')
+        return [x for x in self.synonyms.split(',') if x]
     
     def parts_as_list(self):
-        return self.parts.split('\n')
+        return [x for x in self.parts.split('\n') if x]
 
 class Document(models.Model):
     ''' Represents an already built fronloading document '''

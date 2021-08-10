@@ -362,14 +362,18 @@ def words(request):
 def document_pdf(request, document_id):
     doc = get_object_or_404(Document, id=document_id)
     return Render.render('frontloading/document_pdf.html', {
-        "document": doc
+        "document": doc,
+        "bandw": bw == 'true'
     })
 
 @xframe_options_sameorigin
 def document_prieview(request, document_id):
     doc = get_object_or_404(Document, id=document_id)
+    bw = request.GET.get('bandw', '')
+    print(bw)
     return render(request, 'frontloading/document_pdf.html', {
-        "document": doc
+        "document": doc,
+        "bandw": bw == 'true'
     })
 
 # def picture_upload(request):
