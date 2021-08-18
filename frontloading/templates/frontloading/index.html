@@ -4,24 +4,35 @@
 
 
 <div class="row justify-content-sm-center">
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <div class="card" >
-            <img class="card-img-top" src="{% static 'img/document_icon.gif' %}" alt="Card image cap">
+            <img class="card-img-top" src="{% static 'img/document_icon.gif' %}" alt="Frontloading documents">
             <div class="card-body">
                 <a href="{% url 'documents' %}" class="btn stretched-link">
-                    <h5 class="card-title">Create frontloading document</h5>
+                    <h5 class="card-title">Frontloading Documents</h5>
                     <p class="card-text">Create a new frontloading document, or select an awesome document that already exists.</p>
                 </a>
             </div>
         </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <div class="card">
-            <img class="card-img-top" src="{% static 'img/vocab_icon.gif' %}" alt="Card image cap">
+            <img class="card-img-top" src="{% static 'img/vocab_icon.gif' %}" alt="Vocabulary words">
             <div class="card-body">
                 <a href="words" class="btn stretched-link">
                     <h5 class="card-title">Edit vocabulary words</h5>
                     <p class="card-text">Add or edit vocabulary words and content.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="card" >
+            <img class="card-img-top" src="{% static 'img/vocab_bank.gif' %}" alt="Vocabulary banks">
+            <div class="card-body">
+                <a href="{% url 'banks' %}" class="btn stretched-link">
+                    <h5 class="card-title">Vocabulary Banks</h5>
+                    <p class="card-text">Create or select a Vocabulary Bank document</p>
                 </a>
             </div>
         </div>

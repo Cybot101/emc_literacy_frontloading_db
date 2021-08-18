@@ -1,0 +1,271 @@
+{% load static %}
+{% load template_extras %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>EMC Literacy - Vocabulary Bank</title>
+    <link rel="stylesheet" href="{% static 'css/paper.css' %}">
+<!-- #6F85A0 -->
+    <style type="text/css">
+        @page {
+            size: A4 landscape;
+            @frame content_frame {
+                left: 25pt;
+                right: 25pt;
+                top: 25pt;
+                bottom: 25pt;
+            }
+        }
+        @media print {
+            
+            .show_web {
+                display: none;
+            }
+        }
+        @media screen {
+            .show_web {
+                display: inline;
+                margin: auto;
+                text-align: center;
+                display: block;
+                padding: 10px;
+                color: red;
+                font-size: 14px;
+            }
+        }
+        .table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 15px;
+            background-color: #fff;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .table th,
+        .table tbody td {
+            vertical-align: top;
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            text-align: center;
+            padding: 2px;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+        }
+
+        .content-title {
+            text-align: center;
+            padding: 5px
+        }
+
+        #footer {
+            position: absolute;
+            padding: 10px 10px 10px 20px;
+            bottom: 0;
+            width: 100%;
+            margin-left: -10mm;
+        }
+
+        .border-thick {
+            border-right: solid 2px !important;
+        }
+
+    {% if bandw %}
+        
+        .stripe {
+            background-color: rgb(231, 231, 231);
+            border-top: 1px solid gray;
+            border-bottom: 1px solid gray;
+        }
+        .stripe-light {
+            background-color: white;
+            border-top: 1px solid gray;
+            border-bottom: 1px solid gray;
+        }
+        
+        .content-title {
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            background-color: rgb(231, 231, 231);
+        }
+
+        #footer {
+            color: black; 
+            border-top: solid 1px black;
+        }
+
+    {% else %}
+        
+        .stripe {
+            background-color: #9cf;
+            border-bottom: 1px solid white;
+        }
+        .stripe-light {
+            background-color: #D6E7FD;
+            border-top: 1px solid gray;
+            border-bottom: 1px solid gray;
+        }
+
+        .content-title {
+            background-color: #042B5B;
+            color: white;
+        }
+        
+        #footer {
+            background-color: #808AA0; 
+            color: white; 
+        }
+    {% endif %}
+
+
+        ul {
+            margin: 0px;
+            padding-inline-start: 1.4em;
+        }
+
+        h3 {
+            margin-top: -5px;
+            margin-bottom: 5px;
+        }
+
+
+        body {
+            font-size: 13px;
+            font-family: Helvetica, Arial, sans-serif;
+            line-height: 125%;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-flow: row wrap;
+            align-content: flex-start;
+            height: 60mm;
+        }
+
+        .flex-container div {
+            display: flex;
+            flex: 1 1 1 100px;
+            width: 50%;
+            /* height: 50px; */
+            line-height: 1.5em;
+            text-align: center;
+            justify-content: center;
+        }
+
+    </style>
+</head>
+<body class="A4 landscape">
+<div class="show_web">Turn ON "Print background graphics" in your printer settings.</div>
+<div class="sheet padding-10mm container">
+    <h3>Vocabulary Bank for {{ bank.title }}</h3>
+    <table class="table">
+        <colgroup>
+            <col style="width: 12.5%;">
+            <col style="width: 12.5%;">
+            <col style="width: 12.5%;">
+            <col style="width: 12.5%;">
+            <col style="width: 12.5%;">
+            <col style="width: 12.5%;">
+            <col style="width: 12.5%;">
+            <col style="width: 12.5%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th colspan="8" class="content-title">Disciplinary Vocabulary</th>
+            </tr>
+            <tr>
+                <th colspan="2" class="stripe border-thick">Year 7</th>
+                <th colspan="2" class="stripe-light border-thick">Year 8</th>
+                <th colspan="2" class="stripe border-thick">Year 9</th>
+                <th colspan="2" class="stripe-light">Year 10</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in disc_words %}
+            <tr>
+                <td class="stripe">{{ row.0 }}</td>
+                <td class="stripe border-thick">{{ row.1 }}</td>
+                <td class="stripe-light">{{ row.2 }}</td>
+                <td class="stripe-light border-thick">{{ row.3 }}</td>
+                <td class="stripe">{{ row.4 }}</td>
+                <td class="stripe border-thick">{{ row.5 }}</td>
+                <td class="stripe-light">{{ row.6 }}</td>
+                <td class="stripe-light">{{ row.7 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="table">
+        <colgroup>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+        </colgroup>
+        <thead>
+            <tr>
+                <th colspan="8" class="content-title">Task Words</th>
+            </tr>
+            <tr>
+                <th colspan="2" class="stripe border-thick">Year 7</th>
+                <th colspan="2" class="stripe-light border-thick">Year 8</th>
+                <th colspan="2" class="stripe border-thick">Year 9</th>
+                <th colspan="2" class="stripe-light">Year 10</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in task_words %}
+            <tr>
+                <td class="stripe">{{ row.0 }}</td>
+                <td class="stripe border-thick">{{ row.1 }}</td>
+                <td class="stripe-light">{{ row.2 }}</td>
+                <td class="stripe-light border-thick">{{ row.3 }}</td>
+                <td class="stripe">{{ row.4 }}</td>
+                <td class="stripe border-thick">{{ row.5 }}</td>
+                <td class="stripe-light">{{ row.6 }}</td>
+                <td class="stripe-light">{{ row.7 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="table">
+        <colgroup>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+        </colgroup>
+        <thead>
+            <tr>
+                <th colspan="8" class="content-title">Academic Vocabulary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="stripe-light">
+            {% for wrd in acad_words %}
+            {% if forloop.counter0|divisibleby:8 %}
+            </tr><tr class="stripe-light">
+            {% endif %}
+                <td>{{ wrd }}</td>
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+    <div id="footer">
+        EMC LITERACY
+    </div>
+</div>
+
+</body>
+</html>

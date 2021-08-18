@@ -11,6 +11,11 @@ urlpatterns = [
     path('document/preview/<int:document_id>', views.document_prieview, name='document-preview'),
     path('document/<int:document_id>', views.document, name='document-detail'),
 
+    path('banks', views.banks, name='banks'),
+    path('bank/new', views.bank_new, name='bank-new'),
+    path('bank/preview/<int:bank_id>', views.bank_prieview, name='bank-preview'),
+    path('bank/<int:bank_id>', views.bank, name='bank-detail'),
+
     path('domain', views.domains, name='domains'),
     path('domain/new', views.domain_new, name='domain-new'),
     path('domain/<int:domain_id>', views.domain, name='domain-detail'),

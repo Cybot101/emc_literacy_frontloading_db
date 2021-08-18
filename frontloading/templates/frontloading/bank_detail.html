@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Add/Edit bank</h1>
+<p>
+    <a href="{% url 'banks' %}">< Back</a>
+</p>
+
+<div class="row">
+    <div class="col-sm-12">
+        <form method="POST" action="{% url 'bank-detail' bank.id %}">
+            {% csrf_token %}
+            <input type="hidden" id="bank_id" name="bank_id" value="{{ bank.id }}">
+            <input type="hidden" id="form-words" name="words" value="">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" value="{{ bank.title }}">
+                <div id="titleHelp" class="form-text">Title for the frontloading bank</div>
+            </div>
+            <p><strong>Disciplinary Vocabulary</strong></p>
+            <div class="mb-3">
+                <label for="disc_y7" class="form-label">Year 7 words</label>
+                <textarea class="form-control count-text" id="disc_y7" name="disc_y7" aria-describedby="titleHelp" maxlength="500" rows="4">{{ bank.disciplinary_year7 }}</textarea>
+                <div id="titleHelp" class="form-text"><span class="word-count">0</span>/28</div>
+            </div>
+            <div class="mb-3">
+                <label for="disc_y8" class="form-label">Year 8 words</label>
+                <textarea class="form-control count-text" id="disc_y8" name="disc_y8" aria-describedby="titleHelp" maxlength="500" rows="4">{{ bank.disciplinary_year8 }}</textarea>
+                <div id="titleHelp" class="form-text"><span class="word-count">0</span>/28</div>
+            </div>
+            <div class="mb-3">
+                <label for="disc_y9" class="form-label">Year 9 words</label>
+                <textarea class="form-control count-text" id="disc_y9" name="disc_y9" aria-describedby="titleHelp" maxlength="500" rows="4">{{ bank.disciplinary_year9 }}</textarea>
+                <div id="titleHelp" class="form-text"><span class="word-count">0</span>/28</div>
+            </div>
+            <div class="mb-3">
+                <label for="disc_y10" class="form-label">Year 10 words</label>
+                <textarea class="form-control count-text" id="disc_y10" name="disc_y10" aria-describedby="titleHelp" maxlength="500" rows="4">{{ bank.disciplinary_year10 }}</textarea>
+                <div id="titleHelp" class="form-text"><span class="word-count">0</span>/28</div>
+            </div>
+
+            <p><strong>Task Words</strong></p>
+            <div class="mb-3">
+                <label for="task_y7" class="form-label">Year 7 words</label>
+                <textarea class="form-control count-text" id="task_y7" name="task_y7" aria-describedby="titleHelp" maxlength="500" rows="4">{{ bank.task_year7 }}</textarea>
+                <div id="titleHelp" class="form-text"><span class="word-count">0</span>/12</div>
+            </div>
+            <div class="mb-3">
+                <label for="task_y8" class="form-label">Year 8 words</label>
+                <textarea class="form-control count-text" id="task_y8" name="task_y8" aria-describedby="titleHelp" maxlength="500" rows="4">{{ bank.task_year8 }}</textarea>
+                <div id="titleHelp" class="form-text"><span class="word-count">0</span>/12</div>
+            </div>
+            <div class="mb-3">
+                <label for="task_y9" class="form-label">Year 9 words</label>
+                <textarea class="form-control count-text" id="task_y9" name="task_y9" aria-describedby="titleHelp" maxlength="500" rows="4">{{ bank.task_year9 }}</textarea>
+                <div id="titleHelp" class="form-text"><span class="word-count">0</span>/12</div>
+            </div>
+            <div class="mb-3">
+                <label for="task_y10" class="form-label">Year 10 words</label>
+                <textarea class="form-control count-text" id="task_y10" name="task_y10" aria-describedby="titleHelp" maxlength="500" rows="4">{{ bank.task_year10 }}</textarea>
+                <div id="titleHelp" class="form-text"><span class="word-count">0</span>/12</div>
+            </div>
+
+            <p><strong>Academic Vocabulary</strong></p>
+            <div class="mb-3">
+                <!-- <label for="academic_vocab" class="form-label">Academic vocabulary</label> -->
+                <textarea class="form-control count-text" id="academic_vocab" name="academic_vocab" aria-describedby="titleHelp" maxlength="500" rows="4">{{ bank.academic_vocab }}</textarea>
+                <div id="titleHelp" class="form-text"><span class="word-count">0</span>/24</div>
+            </div>
+            
+            
+            <p><strong>Domain tags</strong></p>
+            <div class="mb-3">
+                <div class="input-group">
+                    <input type="text" class="form-control autocomplete" id="domains" name="domains" aria-describedby="domains" autocomplete="new-password" value="{% for d in bank.domains.all %}{{ d.name }}, {% endfor %}">
+                </div>
+                <div id="domainsHelp" class="form-text">List of teaching domains this bank may be used in (science, maths, etc..)</div>
+            </div>
+
+            <button type="submit" id="form_submit" class="btn btn-success">Save</button>
+            <p>Document must be saved before preview is available</p>
+        </form>
+    </div>
+</div>
+{% if bank.id != -1 %}
+<h3 style="margin-top: 30px;">Preview</h3>
+<a href="{% url 'bank-preview' bank.id %}" class="btn btn-primary" target="_blank" >Print in colour</a>
+&nbsp;
+<a href="{% url 'bank-preview' bank.id %}?bandw=true" class="btn btn-secondary" target="_blank" >Print black and white</a>
+<p></p>
+<div id="preview-div" >
+    <iframe src="{% url 'bank-preview' bank.id %}" width="100%" height="1000px" frameborder="0" ></iframe>
+</div>
+{% endif %}
+
+<script type="text/javascript">
+    $(function() {
+        function count_words(me) {
+            var words = me.val().split(",");
+            if (words.length > 0)
+                if (words[words.length-1].length == 0)
+                    words.pop();
+            me.next().children().first().html(words.length);
+        }
+        $(".count-text").keyup(function() {
+            count_words($(this));
+        });
+        $(".count-text").each(function() {
+            count_words($(this));
+        });
+    })
+</script>
+
+{% endblock %}

@@ -66,6 +66,48 @@ class Document(models.Model):
     
     create_date = models.DateTimeField('date created')
 
+class VocBank(models.Model):
+    ''' Represents vocabulary bank document '''
+    title = models.CharField(max_length=200)
+    # content_reference = models.CharField(max_length=100)
+    disciplinary_year7 = models.CharField(max_length=500)
+    disciplinary_year8 = models.CharField(max_length=500)
+    disciplinary_year9 = models.CharField(max_length=500)
+    disciplinary_year10 = models.CharField(max_length=500)
+    
+    task_year7 = models.CharField(max_length=200)
+    task_year8 = models.CharField(max_length=200)
+    task_year9 = models.CharField(max_length=200)
+    task_year10 = models.CharField(max_length=200)
+    
+    academic_vocab = models.CharField(max_length=600)
+
+    domains = models.ManyToManyField(Domain)
+    
+    create_date = models.DateTimeField('date created')
+
+    def disc_y7_list(self):
+        return [x for x in self.disciplinary_year7.split(',') if x]
+    def disc_y8_list(self):
+        return [x for x in self.disciplinary_year8.split(',') if x]
+    def disc_y9_list(self):
+        return [x for x in self.disciplinary_year9.split(',') if x]
+    def disc_y10_list(self):
+        return [x for x in self.disciplinary_year10.split(',') if x]
+
+    def task_y7_list(self):
+        return [x for x in self.task_year7.split(',') if x]
+    def task_y8_list(self):
+        return [x for x in self.task_year8.split(',') if x]
+    def task_y9_list(self):
+        return [x for x in self.task_year9.split(',') if x]
+    def task_y10_list(self):
+        return [x for x in self.task_year10.split(',') if x]
+    
+    def academic_vocab_list(self):
+        return [x for x in self.academic_vocab.split(',') if x]
+
+
 class User(models.Model):
     name = models.CharField(max_length=100)
     oauth_ident = models.CharField(max_length=100)

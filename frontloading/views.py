@@ -385,9 +385,9 @@ def document_prieview(request, document_id):
 #         return HttpResponse(f'<img src="{pic.image.url}" >')
 #     return HttpResponseBadRequest("no file in request")
 
-def picture_get(request, picture_id):
-    pic = get_object_or_404(Picture, id=picture_id)
-    return HttpResponse(f'<img src="{pic.image.url}" >') # ToDo
+# def picture_get(request, picture_id):
+#     pic = get_object_or_404(Picture, id=picture_id)
+#     return HttpResponse(f'<img src="{pic.image.url}" >') # ToDo
 
 def words_backup(request):
     from django.core import serializers
@@ -395,4 +395,176 @@ def words_backup(request):
     data += serializers.serialize("json", Document.objects.all())
     data += serializers.serialize("json", Domain.objects.all())
     data += serializers.serialize("json", Topic.objects.all())
+    data += serializers.serialize("json", VocBank.objects.all())
     return HttpResponse(data, content_type="aplication/json")
+
+### Vocbulary Banks 
+###
+
+def banks(request):
+    query_set = {}
+    dom = request.GET.get('domain')
+    if dom:
+        query_set['domains__name'] = request.GET.get('domain')
+    
+    context = {
+        'bank_list': VocBank.objects.filter(**query_set).order_by('title'),
+        'domains': Domain.objects.all()
+    }
+    return render(request, 'frontloading/bank_list.html', context)
+
+def get_item(list, idx, default=''):
+    if idx < len(list):
+        return list[idx]
+    else:
+        return default
+
+def bank(request, bank_id = None):
+    if request.method == 'POST':
+        # Add
+        if len(request.POST.get('title')) == 0:
+            return HttpResponseBadRequest()
+        print(bank_id, request.POST.get('bank_id'))
+        if request.POST.get('bank_id') and bank_id:
+            bank = get_object_or_404(VocBank, id=bank_id)
+        else:
+            # New
+            bank = VocBank(
+                create_date=timezone.now()
+            )
+        
+        bank.title = request.POST.get('title')
+        bank.disciplinary_year7 = request.POST.get('disc_y7', '')
+        bank.disciplinary_year8 = request.POST.get('disc_y8', '')
+        bank.disciplinary_year9 = request.POST.get('disc_y9', '')
+        bank.disciplinary_year10 = request.POST.get('disc_y10', '')
+
+        bank.task_year7 = request.POST.get('task_y7', '')
+        bank.task_year8 = request.POST.get('task_y8', '')
+        bank.task_year9 = request.POST.get('task_y9', '')
+        bank.task_year10 = request.POST.get('task_y10', '')
+        
+        bank.academic_vocab = request.POST.get('academic_vocab', '')
+        bank.save()
+
+        domains_text = request.POST.get('domains').split(',')
+        for dom in domains_text:
+            dom = dom.strip()
+            if len(dom) == 0:
+                continue
+            dom_m = Domain.objects.filter(name__startswith=dom)
+            if len(dom_m) > 0:
+                bank.domains.add(dom_m[0])
+            else:
+                dom_n = add_domain(dom)
+                if dom_n:
+                    bank.domains.add(dom_n)
+        bank.save()
+        
+        return redirect('bank-detail', bank_id=bank.id)
+
+    if bank_id:
+        return render(request, 'frontloading/bank_detail.html', {
+            'bank': get_object_or_404(VocBank, id=bank_id)
+        })
+    else:
+        return render(request, 'frontloading/bank_detail.html', {
+            'bank': VocBank()
+        })
+
+def bank_new(request):
+    b = VocBank()
+    b.id = 0
+    return render(request, 'frontloading/bank_detail.html', {
+        'bank': b
+    })
+
+@xframe_options_sameorigin
+def bank_prieview(request, bank_id):
+    bw = request.GET.get('bandw', '')
+    
+    bank = get_object_or_404(VocBank, id=bank_id)
+
+    d7list = [x for x in bank.disciplinary_year7.split(',') if x]
+    d8list = [x for x in bank.disciplinary_year8.split(',') if x]
+    d9list = [x for x in bank.disciplinary_year9.split(',') if x]
+    d10list = [x for x in bank.disciplinary_year10.split(',') if x]
+
+    discLen = len(d7list)
+    if len(d8list) > discLen:
+        discLen = len(d8list)
+    if len(d9list) > discLen:
+        discLen = len(d9list)
+    if len(d10list) > discLen:
+        discLen = len(d10list)
+    discLen = (discLen // 2) + 1
+    # Build combined list of words for table rows
+    # y7, y7, y8, y8, y9, y9, y10, y10
+    y7idx = 0
+    y8idx = 0
+    y9idx = 0
+    y10idx = 0
+    disc_word = []
+    for i in range(discLen):
+        row = []
+        row.append(get_item(d7list, y7idx))
+        row.append(get_item(d7list, y7idx+1))
+        y7idx=y7idx+2
+        row.append(get_item(d8list, y8idx))
+        row.append(get_item(d8list, y8idx+1))
+        y8idx=y8idx+2
+        row.append(get_item(d9list, y9idx))
+        row.append(get_item(d9list, y9idx+1))
+        y9idx=y9idx+2
+        row.append(get_item(d10list, y10idx))
+        row.append(get_item(d10list, y10idx+1))
+        y10idx=y10idx+2
+        disc_word.append(row)
+    
+    d7list = [x for x in bank.task_year7.split(',') if x]
+    d8list = [x for x in bank.task_year8.split(',') if x]
+    d9list = [x for x in bank.task_year9.split(',') if x]
+    d10list = [x for x in bank.task_year10.split(',') if x]
+
+    discLen = len(d7list)
+    if len(d8list) > discLen:
+        discLen = len(d8list)
+    if len(d9list) > discLen:
+        discLen = len(d9list)
+    if len(d10list) > discLen:
+        discLen = len(d10list)
+    discLen = (discLen // 2) + 1
+    # Build combined list of words for table rows
+    # y7, y7, y8, y8, y9, y9, y10, y10
+    y7idx = 0
+    y8idx = 0
+    y9idx = 0
+    y10idx = 0
+    task_word = []
+    for i in range(discLen):
+        row = []
+        row.append(get_item(d7list, y7idx))
+        row.append(get_item(d7list, y7idx+1))
+        y7idx=y7idx+2
+        row.append(get_item(d8list, y8idx))
+        row.append(get_item(d8list, y8idx+1))
+        y8idx=y8idx+2
+        row.append(get_item(d9list, y9idx))
+        row.append(get_item(d9list, y9idx+1))
+        y9idx=y9idx+2
+        row.append(get_item(d10list, y10idx))
+        row.append(get_item(d10list, y10idx+1))
+        y10idx=y10idx+2
+        task_word.append(row)
+
+    acad_words = [x for x in bank.academic_vocab.split(',') if x]
+    for i in range(len(acad_words), 24):
+        acad_words.append(" ")
+
+    return render(request, 'frontloading/bank_pdf.html', {
+        "bank": bank,
+        "bandw": bw == 'true',
+        "disc_words": disc_word,
+        "task_words" : task_word,
+        "acad_words": acad_words
+    })
